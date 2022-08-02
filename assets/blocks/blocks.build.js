@@ -1,7 +1,6 @@
 !(function (e) {
   var t = {};
 
-
   function m(a) {
     if (t[a]) return t[a].exports;
     var i = (t[a] = { i: a, l: !1, exports: {} });
@@ -66,7 +65,7 @@
         return {};
       }
     }
-  
+
     function saveSettingsLocal(settingsName, settingsValue) {
       let localSettings = getSettingsLocal();
       localSettings[settingsName] = settingsValue;
@@ -75,11 +74,13 @@
         JSON.stringify(localSettings)
       );
     }
-  
+
     function getSingleSettingsLocal(settingsName) {
       if (getSettingsLocal() == {}) {
+        console.log("local value is null");
         return null;
       }
+      console.log("get language value: ", getSettingsLocal()[settingsName]);
       return getSettingsLocal()[settingsName];
     }
     m.r(t);
@@ -428,21 +429,21 @@
           return (e.__proto__ = t), e;
         })(e, t);
     }
-    var S = wp.i18n.__,
-      C = wp.blocks,
-      j = C.registerBlockType,
-      L = C.createBlock,
-      P = wp.element,
-      E = P.Component,
-      T = P.Fragment,
-      O = wp.blockEditor,
-      q = O.RichText,
-      M = O.InspectorControls,
-      F = wp.components,
-      D = F.PanelBody,
-      A = F.TextControl,
-      B = F.ToggleControl,
-      V = F.SelectControl,
+    var wpI18n = wp.i18n.__,
+      WPBlocks = wp.blocks,
+      wpRegisterBlockType = WPBlocks.registerBlockType,
+      WpCreateBlock = WPBlocks.createBlock,
+      WpElement = wp.element,
+      WpComponent = WpElement.Component,
+      WpFragment = WpElement.Fragment,
+      WpBlockEditor = wp.blockEditor,
+      wpBlockEditorRichText = WpBlockEditor.RichText,
+      M = WpBlockEditor.InspectorControls,
+      WpComponents = wp.components,
+      WpComponentsPanelBody = WpComponents.PanelBody,
+      WpComponentsTextControl = WpComponents.TextControl,
+      WpComponentsToggleControl = WpComponents.ToggleControl,
+      WpComponentsSelectControl = WpComponents.SelectControl,
       _ = window.wpcm,
       H = _.panelOptions,
       I = _.defaults,
@@ -480,9 +481,9 @@
                   a < e.length;
                   a++
                 )
-                  0 == a && m.push({ label: "Default Option", value: t }),
-                    e[a].value != t
-                      ? m.push({ value: e[a].value, label: S(e[a].label) })
+                  0 === a && m.push({ label: "Default Option", value: t }),
+                    e[a].value !== t
+                      ? m.push({ value: e[a].value, label: wpI18n(e[a].label) })
                       : (m[0] = {
                           value: t,
                           label: "Default (" + e[a].label + ")",
@@ -496,7 +497,7 @@
                 for (var e = [], t = 0; t < Q.length; t++)
                   0 == t && e.push({ value: I.theme, label: "Default Theme" }),
                     Q[t].value != I.theme
-                      ? e.push({ value: Q[t].value, label: S(Q[t].label) })
+                      ? e.push({ value: Q[t].value, label: wpI18n(Q[t].label) })
                       : (e[0] = {
                           value: I.theme,
                           label: "Default Theme (" + Q[t].label + ")",
@@ -1350,15 +1351,15 @@
                   var a = t[m];
                   if (
                     (void 0 !== a.mime &&
-                      e.push({ value: a.mime, label: S(a.name) }),
+                      e.push({ value: a.mime, label: wpI18n(a.name) }),
                     void 0 !== a.mimes)
                   )
                     for (var i = 0; i < a.mimes.length; i++)
-                      0 == i
-                        ? e.push({ value: a.mimes[i], label: S(a.name) })
+                      0 === i
+                        ? e.push({ value: a.mimes[i], label: wpI18n(a.name) })
                         : e.push({
                             value: a.mimes[i],
-                            label: S(a.name + " (" + a.mimes[i] + ")"),
+                            label: wpI18n(a.name + " (" + a.mimes[i] + ")"),
                           });
                 }
                 return e;
@@ -1367,7 +1368,7 @@
             {
               key: "getModeByMime",
               value: function (e) {
-                var t = [
+                var modeMimeMap = [
                   {
                     name: "APL",
                     mime: "text/apl",
@@ -2170,12 +2171,12 @@
                   },
                 ];
                 e = e.toLowerCase();
-                for (var m = 0; m < t.length; m++) {
-                  var a = t[m];
-                  if (a.mime == e) return a;
+                for (var m = 0; m < modeMimeMap.length; m++) {
+                  var a = modeMimeMap[m];
+                  if (a.mime === e) return a;
                   if (a.mimes)
                     for (var i = 0; i < a.mimes.length; i++)
-                      if (a.mimes[i] == e) return a;
+                      if (a.mimes[i] === e) return a;
                 }
               },
             },
@@ -2183,34 +2184,34 @@
               key: "render",
               value: function () {
                 var e = this.getThemeOptions,
-                  t = this.getModeOptions,
-                  m = this.getModeByMime,
-                  a = this.languageLabelOptions,
-                  i = this.props,
-                  n = i.attributes,
-                  o = i.setAttributes,
-                  l = n.showPanel,
-                  r = n.languageLabel,
-                  s = n.fileName,
-                  x = n.mime,
-                  p = n.mode,
-                  c = n.theme,
-                  d = n.lineNumbers,
-                  f = n.firstLineNumber,
-                  u = n.lineWrapping,
-                  h = n.readOnly,
-                  g = n.styleActiveLine,
-                  b = n.disableCopy,
-                  v = n.content,
+                  modeOptions = this.getModeOptions,
+                  modeByMime = this.getModeByMime,
+                  languageLabelOptions = this.languageLabelOptions,
+                  props = this.props,
+                  propsAttributes = props.attributes,
+                  setAttributes = props.setAttributes,
+                  showPanel = propsAttributes.showPanel,
+                  languageLabel = propsAttributes.languageLabel,
+                  fileName = propsAttributes.fileName,
+                  mime = getSingleSettingsLocal("language_mode") ? getSingleSettingsLocal("language_mode") : propsAttributes.mime,
+                  mode = propsAttributes.mode,
+                  theme = propsAttributes.theme,
+                  lineNumbers = propsAttributes.lineNumbers,
+                  firstLineNumber = propsAttributes.firstLineNumber,
+                  lineWrapping = propsAttributes.lineWrapping,
+                  readOnly = propsAttributes.readOnly,
+                  styleActiveLine = propsAttributes.styleActiveLine,
+                  disableCopy = propsAttributes.disableCopy,
+                  content = propsAttributes.content,
                   k = function (e) {
                     return e.join(" ");
                   },
                   N = function (e, t) {
-                    var a = m(e);
-                    if ("file" == t) {
+                    var a = modeByMime(e);
+                    if ("file" === t) {
                       var i = a.fileName ? a.fileName : a.mode,
                         n = a.ext ? a.ext[0] : "";
-                      return n && i == n
+                      return n && i === n
                         ? "filename." + n
                         : n
                         ? i + "." + n
@@ -2218,33 +2219,34 @@
                     }
                     return "";
                   };
-                if (!x) {
+                if (!mime) {
                   var w = I.mime;
-                  o({ mime: w }),
-                    o({ mode: m(w).mode }),
-                    o({ fileName: N(w, r) });
+                  setAttributes({ mime: w }),
+                    setAttributes({ mode: modeByMime(w).mode }),
+                    setAttributes({ fileName: N(w, languageLabel) });
                 }
                 function C(e) {
                   alert(e + "\n\nThis button will work only on front end!");
                 }
+                console.log('assigned mime: ', mime);
                 var j = {
-                    mime: x,
-                    mode: p,
-                    lineNumbers: d,
-                    firstLineNumber: Math.abs(f),
-                    lineWrapping: u,
-                    theme: c,
-                    styleActiveLine: g,
+                    mime: mime,
+                    mode: mode,
+                    lineNumbers: lineNumbers,
+                    firstLineNumber: Math.abs(firstLineNumber),
+                    lineWrapping: lineWrapping,
+                    theme: theme,
+                    styleActiveLine: styleActiveLine,
                     scrollbarStyle: "simple",
                     smartIndent: !0,
                     electricChars: !0,
                   },
                   L = [],
                   P = "";
-                if ("no" == r) o({ fileName: "" }), (P = "");
+                if ("no" === languageLabel) setAttributes({ fileName: "" }), (P = "");
                 else {
-                  var E = x || I.mime,
-                    O = m(E);
+                  var E = mime || I.mime,
+                    O = modeByMime(E);
                   (L = [
                     "language",
                     O.name.toLowerCase(),
@@ -2253,123 +2255,123 @@
                       : O.mimes[0].replace(/\w+\/\w+[-.]/g, ""),
                     O.ext ? O.ext[0] : "",
                   ]),
-                    "language" == r && (P = O.name),
-                    "file" == r && (P = s);
+                    "language" === languageLabel && (P = O.name),
+                    "file" === languageLabel && (P = fileName);
                 }
                 var F = !1;
-                ["htmlmixed", "javascript", "xml", "jsx", "vue"].includes(p) &&
+                ["htmlmixed", "javascript", "xml", "jsx", "vue"].includes(mode) &&
                   (F = !!window.wpcm.panelOptions.runButton);
                 var _ = !!window.wpcm.panelOptions.fullScreenButton,
-                  H = !!window.wpcm.panelOptions.copyButton && !b;
+                  H = !!window.wpcm.panelOptions.copyButton && !disableCopy;
                 return wp.element.createElement(
-                  T,
+                  WpFragment,
                   null,
                   wp.element.createElement(
                     M,
                     null,
                     wp.element.createElement(
-                      D,
+                      WpComponentsPanelBody,
                       {
                         initialOpen: !1,
-                        title: S("CodeMirror Panel Settings"),
+                        title: wpI18n("CodeMirror Panel Settings"),
                       },
-                      wp.element.createElement(B, {
-                        label: S("Show Panel"),
-                        checked: l,
+                      wp.element.createElement(WpComponentsToggleControl, {
+                        label: wpI18n("Show Panel"),
+                        checked: showPanel,
                         onChange: function () {
-                          return o({ showPanel: !l });
+                          return setAttributes({ showPanel: !showPanel });
                         },
                       }),
-                      l &&
-                        wp.element.createElement(V, {
-                          label: S("Langage Label"),
-                          value: r,
-                          help: S(
+                      showPanel &&
+                        wp.element.createElement(WpComponentsSelectControl, {
+                          label: wpI18n("Language Label"),
+                          value: languageLabel,
+                          help: wpI18n(
                             "Language label text. you can use it as file name also."
                           ),
-                          options: a(),
+                          options: languageLabelOptions(),
                           onChange: function (e) {
-                            o({ languageLabel: e }), o({ fileName: N(x, e) });
+                            setAttributes({ languageLabel: e }), setAttributes({ fileName: N(mime, e) });
                           },
                         })
                     ),
                     wp.element.createElement(
-                      D,
-                      { title: S("CodeMirror Settings") },
-                      wp.element.createElement(V, {
-                        label: S("Language / Mod"),
+                      WpComponentsPanelBody,
+                      { title: wpI18n("CodeMirror Settings") },
+                      wp.element.createElement(WpComponentsSelectControl, {
+                        label: wpI18n("Language / Mod"),
                         value: getSingleSettingsLocal("language_mode")
                           ? getSingleSettingsLocal("language_mode")
-                          : x,
-                        options: t(),
+                          : mime,
+                        options: modeOptions(),
                         onChange: function (e) {
                           saveSettingsLocal("language_mode", e);
-                          o({ mime: e });
-                          var t = m(e);
-                          o({ mode: t.mode }), o({ fileName: N(e, r) });
+                          setAttributes({ mime: e });
+                          var t = modeByMime(e);
+                          setAttributes({ mode: t.mode }), setAttributes({ fileName: N(e, languageLabel) });
                         },
                       }),
-                      wp.element.createElement(V, {
-                        label: S("Theme"),
-                        value: c,
+                      wp.element.createElement(WpComponentsSelectControl, {
+                        label: wpI18n("Theme"),
+                        value: theme,
                         options: e(),
                         onChange: function (e) {
-                          return o({ theme: e });
+                          return setAttributes({ theme: e });
                         },
                       })
                     ),
                     wp.element.createElement(
-                      D,
-                      { initialOpen: !1, title: S("Line Settings") },
-                      wp.element.createElement(B, {
-                        label: S("Show Line Numbers?"),
-                        checked: d,
+                      WpComponentsPanelBody,
+                      { initialOpen: !1, title: wpI18n("Line Settings") },
+                      wp.element.createElement(WpComponentsToggleControl, {
+                        label: wpI18n("Show Line Numbers?"),
+                        checked: lineNumbers,
                         onChange: function () {
-                          return o({ lineNumbers: !d });
+                          return setAttributes({ lineNumbers: !lineNumbers });
                         },
                       }),
-                      d &&
-                        wp.element.createElement(A, {
-                          label: S("First Line Number"),
+                      lineNumbers &&
+                        wp.element.createElement(WpComponentsTextControl, {
+                          label: wpI18n("First Line Number"),
                           type: "number",
-                          value: f,
+                          value: firstLineNumber,
                           onChange: function (e) {
-                            o({ firstLineNumber: (e = e || 1) });
+                            setAttributes({ firstLineNumber: (e = e || 1) });
                           },
                           min: "1",
                         }),
-                      wp.element.createElement(B, {
-                        label: S("Highlight Active Line?"),
-                        checked: g,
+                      wp.element.createElement(WpComponentsToggleControl, {
+                        label: wpI18n("Highlight Active Line?"),
+                        checked: styleActiveLine,
                         onChange: function () {
-                          return o({ styleActiveLine: !g });
+                          return setAttributes({ styleActiveLine: !styleActiveLine });
                         },
                       }),
-                      wp.element.createElement(B, {
-                        label: S("Warp Long Line?"),
-                        checked: u,
+                      wp.element.createElement(WpComponentsToggleControl, {
+                        label: wpI18n("Warp Long Line?"),
+                        checked: lineWrapping,
                         onChange: function () {
-                          return o({ lineWrapping: !u });
+                          return setAttributes({ lineWrapping: !lineWrapping });
                         },
                       })
                     ),
                     wp.element.createElement(
-                      D,
+                      WpComponentsPanelBody,
                       null,
-                      wp.element.createElement(B, {
-                        label: S("Editable on Frontend?"),
-                        checked: !h,
+                      wp.element.createElement(WpComponentsToggleControl, {
+                        label: wpI18n("Editable on Frontend?"),
+                        checked: !readOnly,
                         onChange: function (e) {
-                          !0 === e && o({ disableCopy: !1 }),
-                            o({ readOnly: !e });
+                          !0 === e && setAttributes({ disableCopy: !1 }),
+                            setAttributes({ readOnly: !e });
                         },
                       }),
-                      h &&
-                        wp.element.createElement(B, {
-                          label: S("Disable Copy on Frontend?"),
-                          checked: b,
+                      readOnly &&
+                        wp.element.createElement(WpComponentsToggleControl, {
+                          label: wpI18n("Disable Copy on Frontend?"),
+                          checked: disableCopy,
                           onChange: function () {
-                            return o({ disableCopy: !b });
+                            return setAttributes({ disableCopy: !disableCopy });
                           },
                         })
                     )
@@ -2383,18 +2385,18 @@
                         className: k([
                           "CodeMirror",
                           "CodeMirror-panel",
-                          "cm-s-" + c,
+                          "cm-s-" + theme,
                         ]),
                       },
                       wp.element.createElement(
                         "div",
-                        { className: k(["info-panel", l ? "" : "hide-panel"]) },
-                        wp.element.createElement(q, {
+                        { className: k(["info-panel", showPanel ? "" : "hide-panel"]) },
+                        wp.element.createElement(wpBlockEditorRichText, {
                           tagName: "span",
                           className: L.join(" "),
                           value: P,
                           onChange: function (e) {
-                            return o({ fileName: e });
+                            return setAttributes({ fileName: e });
                           },
                           autoFocus: !1,
                         }),
@@ -2445,14 +2447,14 @@
                     ),
                     wp.element.createElement(y, {
                       key: "code",
-                      placeholder: S(
+                      placeholder: wpI18n(
                         "/* Write or Paste Your Code Here \n And Select Code Language Mode, by default (javaScript) Mode is selected*/"
                       ),
-                      value: v,
+                      value: content,
                       options: j,
-                      hasPanel: l,
+                      hasPanel: showPanel,
                       onChange: function (e) {
-                        return o({ content: e });
+                        return setAttributes({ content: e });
                       },
                     })
                   )
@@ -2463,18 +2465,18 @@
           i && v(m, i),
           t
         );
-      })(E);
-    j("codemirror-blocks/code-block", {
-      title: S("CodeMirror Block 1.1"),
-      description: S(
+      })(WpComponent);
+    wpRegisterBlockType("codemirror-blocks/code-block", {
+      title: wpI18n("CodeMirror Block 1.1"),
+      description: wpI18n(
         "CodeMirror Block, It gives you more flexibility to Display formated Program Code."
       ),
       icon: "media-code",
       category: "codemirror-blocks",
       keywords: [
-        S("code"),
-        S("codemirror CodeMirror"),
-        S("gutenberg code block"),
+        wpI18n("code"),
+        wpI18n("codemirror CodeMirror"),
+        wpI18n("gutenberg code block"),
       ],
       attributes: {
         showPanel: { type: "boolean", default: H.showPanel },
@@ -2509,7 +2511,7 @@
               );
             },
             transform: function (e) {
-              return L("codemirror-blocks/code-block", {
+              return WpCreateBlock("codemirror-blocks/code-block", {
                 content: e.textContent,
               });
             },
@@ -2519,7 +2521,7 @@
             blocks: ["core/code", "core/preformatted", "core/paragraph"],
             transform: function (e) {
               var t = e.content;
-              return L("codemirror-blocks/code-block", { content: t });
+              return WpCreateBlock("codemirror-blocks/code-block", { content: t });
             },
           },
         ],
@@ -2529,7 +2531,7 @@
             blocks: ["core/code"],
             transform: function (e) {
               var t = e.content;
-              return L("core/code", { content: t });
+              return WpCreateBlock("core/code", { content: t });
             },
           },
           {
@@ -2537,7 +2539,7 @@
             blocks: ["core/preformatted"],
             transform: function (e) {
               var t = e.content;
-              return L("core/preformatted", { content: t });
+              return WpCreateBlock("core/preformatted", { content: t });
             },
           },
         ],
@@ -2549,7 +2551,7 @@
         return wp.element.createElement(
           "div",
           { className: "code-block" },
-          wp.element.createElement(q.Content, {
+          wp.element.createElement(wpBlockEditorRichText.Content, {
             tagName: "pre",
             value:
               ((t = m),

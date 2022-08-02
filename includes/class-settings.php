@@ -1,6 +1,8 @@
 <?php
 namespace CodeMirror_Blocks;
 
+use function PHPSTORM_META\type;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
@@ -163,16 +165,17 @@ class Settings {
                 'placeholder' => 'Select Language Mode',
                 'default' => 'htmlmixed,text/html'
 			),
-            array(
-				'label' => 'Favorite Language/Mode',
-				'id' => 'mode',
-				'type' => 'select',
-                'options' => self::modes(),
-				'section' => 'editor',
-				'description' => 'Favorite Language Mode.',
-                'placeholder' => 'Select Language Mode',
-                'default' => 'htmlmixed,text/html'
-			),
+            // array(
+			// 	'label' => 'Favorite Language/Mode',
+			// 	'id' => 'favorite_mode',
+			// 	'type' => 'select',
+            //     'multiple' => 'multiple',
+            //     'options' => self::modes(),
+			// 	'section' => 'editor',
+			// 	'description' => 'Favorite Language Mode.',
+            //     'placeholder' => 'Favorite Language Mode',
+            //     'default' => ''
+			// ),
 			array(
 				'label' => 'Theme',
 				'id' => 'theme',
@@ -389,10 +392,25 @@ class Settings {
                 } else if($value == 'no' ) {
                     $value = false;
                 }
+
                 if($name == 'mode') {
+                   
                     $v = \explode(',', $value);
                     $options[$field['section']]['mode'] = $v[0];
                     $options[$field['section']]['mime'] = $v[1];
+                    continue;
+                } else if( $name == 'favorite_mode') {
+                    error_log("my log is : " . json_encode($value));
+                    if (gettype($value) != "array")
+                        continue;
+                    foreach($value as $vx) {
+                        error_log('value is favorite: ' . json_encode($vx));
+                        $v = \explode(',', $vx);
+                        $options[$field['section']]['mode'][] = $v[0];
+                        $options[$field['section']]['mime'][] = $v[1];
+                    }
+
+                    error_log('value is: ' . json_encode($value));
                     continue;
                 }
             }
@@ -426,7 +444,9 @@ class Settings {
                 }
 
                 $options_markup = '';
+
                 foreach($options as $key => $option) {
+                    // error_log("\n\n\n\nvalue is options for this " . json_encode( $option['value']));
                     $label = !empty($option['label']) ? $option['label'] : ucfirst($option['value']);
                     $current_value = !empty($option['value']) ? $option['value'] : $key;
                     $data = '';
@@ -436,8 +456,8 @@ class Settings {
                     $selected = !empty($value) && $value == $current_value ? 'selected' : '';
                     $options_markup .= sprintf('<option value="%1$s"%4$s%3$s>%2$s</option>', $current_value, $label, $selected, $data);
                 }
-                printf( '<select name="%1$s" id="%1$s" placeholder="%2$s">%3$s</select>',
-                    $id,
+                printf( '<select '.(isset($field['multiple'])? ' multiple=multiple' : '').' name="%1$s" id="%1$s" placeholder="%2$s">%3$s</select>',
+                    $id. (isset($field['multiple']) && $field['multiple'] =='multiple' ? '[]' : ''),
                     $field['placeholder'],
                     $options_markup
                 );
